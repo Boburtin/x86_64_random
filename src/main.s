@@ -5,12 +5,13 @@ include "mainmacros.inc"
 section ".text" code readable executable
 
 macro ITR_LOOP_PRINTS n {
-    local lp
+    local lp, lp2
 
     push r15
     mov r15, n
 
     lp:
+    push rbp
 
     GET_RSP_STR charBuf
     PRINT_BUF hStdout, charBuf, nCharsWritten
@@ -19,15 +20,17 @@ macro ITR_LOOP_PRINTS n {
     dec r15
     test r15, r15
     jnz lp
-    
+
+    mov r15, n
+
+    lp2:
+    pop rbp
+    dec r15
+    test r15, r15
+    jnz lp2
+
     pop r15
 }
-
-convert_to_str:
-    GET_RSP_STR charBuf
-    PRINT_BUF hStdout, charBuf, nCharsWritten
-    CLEAR_BUF charBuf, nCharsWritten
-ret
 
 start:
     push rbp
