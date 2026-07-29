@@ -1,0 +1,7 @@
+# binary and build artifacts
+*.exe
+out/
+build/
+
+# claude debug files
+*.claude*

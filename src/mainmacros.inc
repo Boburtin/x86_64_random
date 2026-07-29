@@ -1,8 +1,30 @@
 include "../inc/WIN64A.INC"
 
-macro START_INIT {
+macro DEC_STACK_ADDR n {
+    local lp
+
+    push r15
+    mov r15, n
+    lp:
     push rbp
-    mov rbp, rsp
+    dec r15
+    test r15, r15
+    jnz lp
+    pop r15
+}
+
+macro INC_STACK_ADDR n {
+    local lp
+
+    push r15
+    mov r15, n
+    lp:
+    pop rbp
+    dec r15
+    test r15, r15
+    jnz lp
+
+    pop r15
 }
 
 macro GET_STD_HANDLE op_code {
@@ -54,13 +76,28 @@ macro GET_RSP_STR b {
 
 ; restore registers
 
-    pop rbp rax rdi rdx
+    pop rdx rdi rax rbp
+}
+
+macro CLEAR_BUF b, n {
+    push rax rdi rcx
+
+    std
+    lea rdi, [b + 127]
+    xor al, al
+    mov rcx, [n]
+    rep stosb
+    cld
+
+    mov dword [n], 0
+
+    pop rcx rdi rax
 }
 
 macro PRINT_BUF a, b, d {
     push rcx rdx r8 r9 r12
 
-    mov rax, rsp
+    mov r12, rsp
     and r12, 8
     sub rsp, 32         ; Windows calling convention shadow space
     sub rsp, r12
@@ -75,14 +112,6 @@ macro PRINT_BUF a, b, d {
 
     add rsp, 32
     add rsp, r12
-    pop rcx rdx r8 r9 r12
+    pop r12 r9 r8 rdx rcx
 }
 
-macro CLEAR_BUF b, n {
-    push rax rdi rcx
-    mov al, 0
-    lea rdi, b
-    mov rcx, n
-    rep stosb
-    pop rax rdi rcx
-}

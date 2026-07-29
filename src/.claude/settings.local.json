@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(/c/Users/Ryan/Bucket/FASM/FASM.EXE /c/Users/Ryan/AppData/Local/Temp/claude/C--Users-Ryan-Dev-Projects-asm-notes-src2/7c7b77f7-623d-4250-accd-7af2788cfc38/scratchpad/asmtest/main.s /c/Users/Ryan/AppData/Local/Temp/claude/C--Users-Ryan-Dev-Projects-asm-notes-src2/7c7b77f7-623d-4250-accd-7af2788cfc38/scratchpad/asmtest/main_diag.exe)",
-      "Bash(/c/Users/Ryan/AppData/Local/Temp/claude/C--Users-Ryan-Dev-Projects-asm-notes-src2/7c7b77f7-623d-4250-accd-7af2788cfc38/scratchpad/asmtest/main_diag.exe)",
-      "Bash(echo \"exit: $?\")"
-    ]
-  }
-}

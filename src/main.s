@@ -3,18 +3,41 @@ entry start
 include "mainmacros.inc"
 
 section ".text" code readable executable
+
+macro ITR_LOOP_PRINTS n {
+    local lp
+
+    push r15
+    mov r15, n
+
+    lp:
+
+    GET_RSP_STR charBuf
+    PRINT_BUF hStdout, charBuf, nCharsWritten
+    CLEAR_BUF charBuf, nCharsWritten
+
+    dec r15
+    test r15, r15
+    jnz lp
+    
+    pop r15
+}
+
 convert_to_str:
     GET_RSP_STR charBuf
     PRINT_BUF hStdout, charBuf, nCharsWritten
+    CLEAR_BUF charBuf, nCharsWritten
 ret
 
 start:
     push rbp
     mov rbp, rsp
     sub rsp, 48
+
     GET_STD_HANDLE -11
     GET_STD_HANDLE -10
-    call convert_to_str
+
+    ITR_LOOP_PRINTS 10
 exit:
     add rsp, 48
     pop rbp
@@ -22,6 +45,7 @@ exit:
     invoke ExitProcess, 0
 
 section ".bss" data readable writeable
+
 hStdout:        rq 1
 hStdin:         rq 1
 nCharsWritten:  rd 1
@@ -29,6 +53,7 @@ charBuf:        rb 128
 bufLen:         rb 1
 
 section ".idata" import data readable writeable
+
 library kernel32, "kernel32.dll"
 import  kernel32, ExitProcess, "ExitProcess",\
                   GetStdHandle, "GetStdHandle",\
