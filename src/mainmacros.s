@@ -1,15 +1,26 @@
 include "../inc/WIN64A.INC"
 
+macro EXIT_CALL n {
+    mov r15, rsp
+    and r15, 8
+    sub rsp, r15
+    invoke ExitProcess, n
+}
+
 macro DEC_STACK_ADDR n {
     local lp
 
     push r15
     mov r15, n
+
     lp:
+
     push rbp
     dec r15
+
     test r15, r15
     jnz lp
+
     pop r15
 }
 
@@ -18,9 +29,12 @@ macro INC_STACK_ADDR n {
 
     push r15
     mov r15, n
+
     lp:
+
     pop rbp
     dec r15
+
     test r15, r15
     jnz lp
 
@@ -112,6 +126,42 @@ macro PRINT_BUF a, b, d {
 
     add rsp, 32
     add rsp, r12
+
     pop r12 r9 r8 rdx rcx
 }
+
+
+macro ITR_LOOP_PRINTS n {
+    local lp, lp2
+
+    push r15
+    mov r15, n
+
+    lp:
+    push rbp
+    GET_RSP_STR charBuf
+    PRINT_BUF hStdout, charBuf, nCharsWritten
+    CLEAR_BUF charBuf, nCharsWritten
+    dec r15
+    test r15, r15
+    jnz lp
+
+    mov r15, n
+
+    lp2:
+    pop rbp
+    dec r15
+    test r15, r15
+    jnz lp2
+
+    pop r15
+}
+
+section ".idata" import data readable writeable
+library kernel32, "kernel32.dll"
+import kernel32, ExitProcess, "ExitProcess",\
+    GetStdHandle, "GetStdHandle",\
+    WriteConsoleA, "WriteConsoleA",\
+    ReadConsoleA, "ReadConsoleA",\
+    Sleep, "Sleep"
 
